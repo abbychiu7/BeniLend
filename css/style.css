@@ -553,3 +553,245 @@ nav a:hover, nav a.active {
         text-align: left;
     }
 }
+
+/* Notification System Styles */
+.notification-banner {
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.notification-banner.hidden {
+    display: none;
+}
+
+.notification-item {
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+/* Notification Types */
+.notification-urgent {
+    background: linear-gradient(135deg, #ffe6e6, #fff0f0);
+    border: 1px solid #ffcccc;
+    color: #c92a2a;
+}
+
+.notification-urgent::before {
+    background: #ff4757;
+}
+
+.notification-warning {
+    background: linear-gradient(135deg, #fff4e6, #fff9f0);
+    border: 1px solid #ffddcc;
+    color: #d68910;
+}
+
+.notification-warning::before {
+    background: #ffa726;
+}
+
+.notification-info {
+    background: linear-gradient(135deg, #e6f3ff, #f0f8ff);
+    border: 1px solid #cce7ff;
+    color: #1976d2;
+}
+
+.notification-info::before {
+    background: #42a5f5;
+}
+
+.notification-success {
+    background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+}
+
+.notification-success::before {
+    background: #4caf50;
+}
+
+.notification-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.notification-message {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.notification-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.notification-btn-primary {
+    background: var(--accent);
+    color: white;
+}
+
+.notification-btn-primary:hover {
+    background: #6ba085;
+    transform: translateY(-1px);
+}
+
+.notification-btn-secondary {
+    background: transparent;
+    color: var(--text-light);
+    border: 1px solid var(--border);
+}
+
+.notification-btn-secondary:hover {
+    background: var(--secondary);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-light);
+    margin-left: 1rem;
+    padding: 0.2rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background: rgba(0,0,0,0.1);
+    color: var(--text);
+}
+
+/* Due Date Indicators */
+.due-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.due-urgent {
+    background: #ffe6e6;
+    color: #c92a2a;
+    border: 1px solid #ffcccc;
+}
+
+.due-warning {
+    background: #fff4e6;
+    color: #d68910;
+    border: 1px solid #ffddcc;
+}
+
+.due-soon {
+    background: #e6f3ff;
+    color: #1976d2;
+    border: 1px solid #cce7ff;
+}
+
+.due-indicator .icon {
+    font-size: 0.7rem;
+}
+
+/* Notification Animation */
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+}
+
+.notification-item.animate-in {
+    animation: slideInDown 0.5s ease-out;
+}
+
+/* Mobile Responsiveness for Notifications */
+@media (max-width: 768px) {
+    .notification-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .notification-content {
+        width: 100%;
+    }
+    
+    .notification-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .notification-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        margin: 0;
+    }
+}

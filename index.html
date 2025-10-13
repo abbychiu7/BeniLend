@@ -22,6 +22,11 @@
     <div class="container">
         <!-- Dashboard Page -->
         <div id="dashboard" class="page">
+            <!-- Notification Banner -->
+            <div id="notificationBanner" class="notification-banner hidden">
+                <!-- Notifications will be dynamically inserted here -->
+            </div>
+
             <div class="welcome">
                 <h1>Hi Student, ready to borrow?</h1>
                 <p>Browse available equipment and make a reservation</p>
@@ -126,29 +131,8 @@
                 <p>Manage your current and upcoming reservations</p>
             </div>
 
-            <div class="reservation-list">
-                <div class="reservation-item">
-                    <div class="reservation-info">
-                        <h4>DSLR Camera</h4>
-                        <p>Oct 15, 2025 10:00 AM - Oct 17, 2025 5:00 PM</p>
-                        <span class="status available">Upcoming</span>
-                    </div>
-                    <div class="reservation-actions">
-                        <button class="btn-small" style="background: var(--primary);">Extend</button>
-                        <button class="btn-small" style="background: var(--danger);">Cancel</button>
-                    </div>
-                </div>
-
-                <div class="reservation-item">
-                    <div class="reservation-info">
-                        <h4>Speakers</h4>
-                        <p>Oct 13, 2025 9:00 AM - Oct 14, 2025 3:00 PM</p>
-                        <span class="status reserved">Active</span>
-                    </div>
-                    <div class="reservation-actions">
-                        <button class="btn-small" style="background: var(--accent); color: white;">Return</button>
-                    </div>
-                </div>
+            <div class="reservation-list" id="reservationList">
+                <!-- Reservations will be dynamically populated here -->
             </div>
         </div>
 
