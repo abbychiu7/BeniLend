@@ -15,11 +15,11 @@ class BeniLendAuth {
         const user = this.getCurrentUser();
 
         // Pages that don't require authentication
-        const publicPages = ['login.html', 'index.html', ''];
+        const publicPages = ['index.html', 'index.html', ''];
 
         if (!user && !publicPages.includes(currentPage)) {
             // User not logged in, redirect to login
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
             return;
         }
 
@@ -63,7 +63,7 @@ class BeniLendAuth {
             // Not logged in - show basic navigation
             nav.innerHTML = `
                 <a href="index.html">Home</a>
-                <a href="login.html">Login</a>
+                <a href="index.html">Login</a>
             `;
         } else if (user.role === 'user') {
             // User navigation - only Dashboard and My Reservations
@@ -93,7 +93,7 @@ class BeniLendAuth {
         localStorage.removeItem('benilend_user');
         this.showFloatingNotification('Logged out successfully!', 'success', '👋');
         setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }, 1000);
     }
 

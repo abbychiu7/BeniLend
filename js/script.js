@@ -20,9 +20,8 @@ function showPage(pageId) {
 
 // Function to open reservation form with selected equipment
 function openReservation(equipmentName) {
-    currentEquipment = equipmentName;
-    document.getElementById('equipmentName').value = equipmentName;
-    showPage('reservation');
+    // Redirect to reservation page with equipment parameter
+    window.location.href = `reservation.html?equipment=${encodeURIComponent(equipmentName)}`;
 }
 
 // Function to handle reservation form submission

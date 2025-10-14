@@ -44,8 +44,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <textarea rows="3" placeholder="Any special instructions..."></textarea>
+                        <label>Notes (Required)</label>
+                        <textarea id="reservationNotes" rows="3" placeholder="Reason for borrowing..."></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Reserve</button>
@@ -75,49 +75,71 @@
     <script src="js/auth.js"></script>
     <script src="js/script.js"></script>
     <script>
-        // Reservation data for the current user
-        const userReservationsData = [
-            {
-                id: 1,
-                equipment: 'DSLR Camera',
-                startDate: '2025-10-15',
-                startTime: '10:00',
-                endDate: '2025-10-17',
-                endTime: '17:00',
-                status: 'upcoming',
-                checkedOut: false
-            },
-            {
-                id: 2,
-                equipment: 'Speakers', 
-                startDate: '2025-10-13',
-                startTime: '09:00',
-                endDate: '2025-10-14',
-                endTime: '15:00',
-                status: 'active',
-                checkedOut: true
-            },
-            {
-                id: 3,
-                equipment: 'Microphone Set',
-                startDate: '2025-10-12',
-                startTime: '14:00',
-                endDate: '2025-10-13',
-                endTime: '16:00',
-                status: 'active',
-                checkedOut: true
-            },
-            {
-                id: 4,
-                equipment: 'Speakers',
-                startDate: '2025-10-11',
-                startTime: '10:00',
-                endDate: '2025-10-13',
-                endTime: '18:00',
-                status: 'active',
-                checkedOut: true
+        // Load user reservations from localStorage or use default data
+        function loadUserReservations() {
+            const stored = localStorage.getItem('benilend_reservations');
+            if (stored) {
+                return JSON.parse(stored);
+            } else {
+                // Default reservation data for demo
+                return [
+                    {
+                        id: 1,
+                        equipment: 'DSLR Camera',
+                        startDate: '2025-10-15',
+                        startTime: '10:00',
+                        endDate: '2025-10-17',
+                        endTime: '17:00',
+                        status: 'upcoming',
+                        checkedOut: false
+                    },
+                    {
+                        id: 2,
+                        equipment: 'Speakers', 
+                        startDate: '2025-10-13',
+                        startTime: '09:00',
+                        endDate: '2025-10-14',
+                        endTime: '15:00',
+                        status: 'active',
+                        checkedOut: true
+                    },
+                    {
+                        id: 3,
+                        equipment: 'Microphone Set',
+                        startDate: '2025-10-12',
+                        startTime: '14:00',
+                        endDate: '2025-10-13',
+                        endTime: '16:00',
+                        status: 'active',
+                        checkedOut: true
+                    },
+                    {
+                        id: 4,
+                        equipment: 'Speakers',
+                        startDate: '2025-10-11',
+                        startTime: '10:00',
+                        endDate: '2025-10-13',
+                        endTime: '18:00',
+                        status: 'active',
+                        checkedOut: true
+                    }
+                ];
             }
-        ];
+        }
+
+        // Save reservations to localStorage
+        function saveUserReservations(reservations) {
+            localStorage.setItem('benilend_reservations', JSON.stringify(reservations));
+        }
+
+        // Get next available reservation ID
+        function getNextReservationId(reservations) {
+            if (reservations.length === 0) return 1;
+            return Math.max(...reservations.map(r => r.id)) + 1;
+        }
+
+        // Reservation data for the current user
+        let userReservationsData = loadUserReservations();
 
         // Utility functions for date/time handling
         function getCurrentDate() {
@@ -332,6 +354,9 @@
                 reservation.status = 'completed';
                 reservation.checkedOut = false;
                 
+                // Save to localStorage
+                saveUserReservations(userReservationsData);
+                
                 // Show floating success notification
                 showFloatingNotification(`Successfully returned ${reservation.equipment}!`, 'success', '✅');
                 
@@ -347,6 +372,9 @@
                 currentEndDate.setDate(currentEndDate.getDate() + 1);
                 reservation.endDate = currentEndDate.toISOString().split('T')[0];
                 
+                // Save to localStorage
+                saveUserReservations(userReservationsData);
+                
                 showFloatingNotification(`Extended ${reservation.equipment} return date by 1 day!`, 'success', '📅');
                 refreshReservationPage();
             }
@@ -357,6 +385,10 @@
             if (reservationIndex > -1) {
                 const reservation = userReservationsData[reservationIndex];
                 userReservationsData.splice(reservationIndex, 1);
+                
+                // Save to localStorage
+                saveUserReservations(userReservationsData);
+                
                 showFloatingNotification(`Cancelled reservation for ${reservation.equipment}`, 'warning', '🗑️');
                 refreshReservationPage();
             }
@@ -443,6 +475,62 @@
                     displayDueDateNotifications(notifications);
                 }, 5 * 60 * 1000);
             }
+        }
+
+        // Handle reservation form submission
+        function submitReservation(event) {
+            event.preventDefault();
+            
+            const equipmentName = document.getElementById('equipmentName').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const timeFrom = document.getElementById('timeFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const timeTo = document.getElementById('timeTo').value;
+            const notes = document.getElementById('reservationNotes').value;
+            
+            // Validate dates
+            const startDateTime = new Date(`${dateFrom}T${timeFrom}`);
+            const endDateTime = new Date(`${dateTo}T${timeTo}`);
+            const now = new Date();
+            
+            if (startDateTime <= now) {
+                showFloatingNotification('Start date must be in the future!', 'error', '❌');
+                return;
+            }
+            
+            if (endDateTime <= startDateTime) {
+                showFloatingNotification('End date must be after start date!', 'error', '❌');
+                return;
+            }
+            
+            // Create new reservation
+            const newReservation = {
+                id: getNextReservationId(userReservationsData),
+                equipment: equipmentName,
+                startDate: dateFrom,
+                startTime: timeFrom,
+                endDate: dateTo,
+                endTime: timeTo,
+                status: 'upcoming',
+                checkedOut: false,
+                notes: notes,
+                reservedAt: new Date().toISOString()
+            };
+            
+            // Add to reservations array
+            userReservationsData.push(newReservation);
+            
+            // Save to localStorage
+            saveUserReservations(userReservationsData);
+            
+            // Show success notification
+            showFloatingNotification(`Successfully reserved ${equipmentName}!`, 'success', '✅');
+            
+            // Redirect to reservations list after a short delay
+            setTimeout(() => {
+                // Remove equipment parameter from URL and reload page to show reservations list
+                window.location.href = 'reservation.html';
+            }, 1500);
         }
 
         // Initialize when page loads
