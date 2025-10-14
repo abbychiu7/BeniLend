@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BeniLend</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">BeniLend</div>
+            <nav>
+                <!-- Navigation will be populated by auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Admin Dashboard</h1>
+            <p>Manage equipment reservations and approve requests</p>
+        </div>
+
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <h3 id="pendingCount">5</h3>
+                <p>Pending Requests</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <h3>12</h3>
+                <p>Active Reservations</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <h3>6</h3>
+                <p>Available Equipment</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <h3>2</h3>
+                <p>Overdue Items</p>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text);">Pending Reservations</h2>
+            <div class="admin-reservation-list" id="pendingList">
+                <div class="admin-reservation-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>April Abegail B. Chiu</h4>
+                            <p class="user-id">ID: 12012345</p>
+                        </div>
+                        <span class="status-badge pending">Pending</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">DSLR Camera</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 15, 2025 10:00 AM - Oct 17, 2025 5:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Purpose:</span>
+                            <span class="detail-value">Photography project for Multimedia class</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Requested:</span>
+                            <span class="detail-value">Oct 13, 2025 2:30 PM</span>
+                        </div>
+                    </div>
+                    <div class="admin-card-actions">
+                        <button class="btn-action approve" onclick="approveReservation(this)">
+                            <span>✓</span> Approve
+                        </button>
+                        <button class="btn-action reject" onclick="rejectReservation(this)">
+                            <span>✗</span> Reject
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-reservation-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Mary Andrea Baron</h4>
+                            <p class="user-id">ID: 12012346</p>
+                        </div>
+                        <span class="status-badge pending">Pending</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Speakers</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 14, 2025 1:00 PM - Oct 15, 2025 6:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Purpose:</span>
+                            <span class="detail-value">Video editing for final project</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Requested:</span>
+                            <span class="detail-value">Oct 13, 2025 3:15 PM</span>
+                        </div>
+                    </div>
+                    <div class="admin-card-actions">
+                        <button class="btn-action approve" onclick="approveReservation(this)">
+                            <span>✓</span> Approve
+                        </button>
+                        <button class="btn-action reject" onclick="rejectReservation(this)">
+                            <span>✗</span> Reject
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-reservation-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Samuel Altea</h4>
+                            <p class="user-id">ID: 12012347</p>
+                        </div>
+                        <span class="status-badge pending">Pending</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Lighting Kit</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 16, 2025 9:00 AM - Oct 16, 2025 4:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Purpose:</span>
+                            <span class="detail-value">Studio photography session</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Requested:</span>
+                            <span class="detail-value">Oct 13, 2025 4:00 PM</span>
+                        </div>
+                    </div>
+                    <div class="admin-card-actions">
+                        <button class="btn-action approve" onclick="approveReservation(this)">
+                            <span>✓</span> Approve
+                        </button>
+                        <button class="btn-action reject" onclick="rejectReservation(this)">
+                            <span>✗</span> Reject
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2 style="margin-bottom: 1.5rem; color: var(--text);">Approved Reservations</h2>
+            <div class="admin-reservation-list" id="approvedList">
+                <div class="admin-reservation-card approved-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Jenna Aznar</h4>
+                            <p class="user-id">ID: 12012348</p>
+                        </div>
+                        <span class="status-badge approved">Approved</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Microphone Set</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 14, 2025 10:00 AM - Oct 14, 2025 3:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Approved by:</span>
+                            <span class="detail-value">Admin - Oct 13, 2025 2:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-reservation-card approved-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Jed Engbino</h4>
+                            <p class="user-id">ID: 12012349</p>
+                        </div>
+                        <span class="status-badge approved">Approved</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Tripod Stand</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 15, 2025 2:00 PM - Oct 15, 2025 8:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Approved by:</span>
+                            <span class="detail-value">Admin - Oct 13, 2025 1:45 PM</span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="admin-reservation-card approved-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Jana Madlangbayan</h4>
+                            <p class="user-id">ID: 12012349</p>
+                        </div>
+                        <span class="status-badge approved">Approved</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Tripod Stand</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 15, 2025 2:00 PM - Oct 15, 2025 8:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Approved by:</span>
+                            <span class="detail-value">Admin - Oct 13, 2025 1:45 PM</span>
+                        </div>
+                    </div>
+                </div>
+                 <div class="admin-reservation-card approved-card">
+                    <div class="admin-card-header">
+                        <div>
+                            <h4>Naomi Ohya</h4>
+                            <p class="user-id">ID: 12012349</p>
+                        </div>
+                        <span class="status-badge approved">Approved</span>
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="reservation-detail">
+                            <span class="detail-label">Equipment:</span>
+                            <span class="detail-value">Tripod Stand</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">Oct 15, 2025 2:00 PM - Oct 15, 2025 8:00 PM</span>
+                        </div>
+                        <div class="reservation-detail">
+                            <span class="detail-label">Approved by:</span>
+                            <span class="detail-value">Admin - Oct 13, 2025 1:45 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reservations - BeniLend</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">BeniLend</div>
+            <nav>
+                <!-- Navigation will be populated by auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Show reservation form if equipment parameter exists -->
+        <div id="reservationFormSection" class="hidden">
+            <div class="reservation-form">
+                <h2 style="margin-bottom: 2rem; color: var(--text);">Reserve Equipment</h2>
+                <form onsubmit="submitReservation(event)">
+                    <div class="form-group">
+                        <label>Equipment</label>
+                        <input type="text" id="equipmentName" readonly style="background: var(--secondary);">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reserve From</label>
+                        <div class="datetime-group">
+                            <input type="date" id="dateFrom" required>
+                            <input type="time" id="timeFrom" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reserve To</label>
+                        <div class="datetime-group">
+                            <input type="date" id="dateTo" required>
+                            <input type="time" id="timeTo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea rows="3" placeholder="Any special instructions..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Reserve</button>
+                    <a href="dashboard.html" class="btn btn-secondary" style="display: inline-block; text-align: center; text-decoration: none; margin-top: 0.5rem;">Cancel</a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Show reservations list if no equipment parameter -->
+        <div id="reservationListSection">
+            <!-- Due Date Notification Banner -->
+            <div id="dueDateNotificationBanner" class="notification-banner hidden">
+                <!-- Due date notifications will be dynamically inserted here -->
+            </div>
+
+            <div class="welcome">
+                <h1>My Reservations</h1>
+                <p>Manage your current and upcoming reservations</p>
+            </div>
+
+            <div class="reservation-list" id="dynamicReservationList">
+                <!-- Reservations will be dynamically populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Reservation data for the current user
+        const userReservationsData = [
+            {
+                id: 1,
+                equipment: 'DSLR Camera',
+                startDate: '2025-10-15',
+                startTime: '10:00',
+                endDate: '2025-10-17',
+                endTime: '17:00',
+                status: 'upcoming',
+                checkedOut: false
+            },
+            {
+                id: 2,
+                equipment: 'Speakers', 
+                startDate: '2025-10-13',
+                startTime: '09:00',
+                endDate: '2025-10-14',
+                endTime: '15:00',
+                status: 'active',
+                checkedOut: true
+            },
+            {
+                id: 3,
+                equipment: 'Microphone Set',
+                startDate: '2025-10-12',
+                startTime: '14:00',
+                endDate: '2025-10-13',
+                endTime: '16:00',
+                status: 'active',
+                checkedOut: true
+            },
+            {
+                id: 4,
+                equipment: 'Speakers',
+                startDate: '2025-10-11',
+                startTime: '10:00',
+                endDate: '2025-10-13',
+                endTime: '18:00',
+                status: 'active',
+                checkedOut: true
+            }
+        ];
+
+        // Utility functions for date/time handling
+        function getCurrentDate() {
+            return new Date();
+        }
+
+        function parseDateTime(date, time) {
+            return new Date(`${date}T${time}:00`);
+        }
+
+        function calculateHoursUntilDue(dueDateTime) {
+            const now = getCurrentDate();
+            const timeDiff = dueDateTime.getTime() - now.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600));
+        }
+
+        function calculateDaysUntilDue(dueDateTime) {
+            const now = getCurrentDate();
+            const timeDiff = dueDateTime.getTime() - now.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+
+        // Due date notification checker
+        
+        function checkReservationDueDates() {
+            const notifications = [];
+            const now = getCurrentDate();
+            
+            userReservationsData.forEach(reservation => {
+                if (reservation.status === 'active' && reservation.checkedOut) {
+                    const dueDateTime = parseDateTime(reservation.endDate, reservation.endTime);
+                    const hoursUntilDue = calculateHoursUntilDue(dueDateTime);
+                    const daysUntilDue = calculateDaysUntilDue(dueDateTime);
+                    
+                    // Overdue items
+                    if (hoursUntilDue < 0) {
+                        const hoursOverdue = Math.abs(hoursUntilDue);
+                        notifications.push({
+                            type: 'urgent',
+                            icon: '🚨',
+                            title: `${reservation.equipment} is OVERDUE!`,
+                            message: `This item was due ${hoursOverdue > 24 ? Math.floor(hoursOverdue/24) + ' days' : hoursOverdue + ' hours'} ago. Please return immediately to avoid late fees.`,
+                            equipment: reservation.equipment,
+                            reservationId: reservation.id,
+                            priority: 1
+                        });
+                    }
+                    // Due today (within 24 hours)
+                    else if (hoursUntilDue <= 24 && hoursUntilDue > 0) {
+                        notifications.push({
+                            type: 'warning',
+                            icon: '⏰',
+                            title: `${reservation.equipment} due ${hoursUntilDue <= 6 ? 'in ' + hoursUntilDue + ' hours' : 'today'}!`,
+                            message: `Return by ${dueDateTime.toLocaleDateString()} at ${dueDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}.`,
+                            equipment: reservation.equipment,
+                            reservationId: reservation.id,
+                            priority: 2
+                        });
+                    }
+                    // Due within 3 days
+                    else if (daysUntilDue <= 3 && daysUntilDue > 0) {
+                        notifications.push({
+                            type: 'info',
+                            icon: '📋',
+                            title: `${reservation.equipment} due in ${daysUntilDue} ${daysUntilDue === 1 ? 'day' : 'days'}`,
+                            message: `Due ${dueDateTime.toLocaleDateString()} at ${dueDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}. Plan your return ahead of time.`,
+                            equipment: reservation.equipment,
+                            reservationId: reservation.id,
+                            priority: 3
+                        });
+                    }
+                }
+            });
+            
+            // Sort by priority (urgent first)
+            notifications.sort((a, b) => a.priority - b.priority);
+            return notifications;
+        }
+
+        // Display due date notifications
+        function displayDueDateNotifications(notifications) {
+            const banner = document.getElementById('dueDateNotificationBanner');
+            
+            if (notifications.length === 0) {
+                banner.classList.add('hidden');
+                return;
+            }
+            
+            banner.innerHTML = '';
+            banner.classList.remove('hidden');
+            
+            notifications.forEach((notification, index) => {
+                const notificationElement = document.createElement('div');
+                notificationElement.className = `notification-item notification-${notification.type} animate-in`;
+                notificationElement.style.animationDelay = `${index * 0.1}s`;
+                
+                notificationElement.innerHTML = `
+                    <div class="notification-content">
+                        <span class="notification-icon">${notification.icon}</span>
+                        <div class="notification-text">
+                            <div class="notification-title">${notification.title}</div>
+                            <div class="notification-message">${notification.message}</div>
+                        </div>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="notification-btn notification-btn-primary" onclick="returnEquipmentReservation(${notification.reservationId})">
+                            Return Now
+                        </button>
+                        <button class="notification-btn notification-btn-secondary" onclick="extendReservationDue(${notification.reservationId})">
+                            Extend
+                        </button>
+                        <button class="notification-close" onclick="dismissDueDateNotification(this)" aria-label="Dismiss">
+                            ×
+                        </button>
+                    </div>
+                `;
+                
+                banner.appendChild(notificationElement);
+            });
+        }
+
+        // Get due date indicator for reservation item
+        function getDueDateIndicatorHTML(reservation) {
+            if (reservation.status !== 'active' || !reservation.checkedOut) {
+                return '';
+            }
+            
+            const dueDateTime = parseDateTime(reservation.endDate, reservation.endTime);
+            const hoursUntilDue = calculateHoursUntilDue(dueDateTime);
+            const daysUntilDue = calculateDaysUntilDue(dueDateTime);
+            
+            if (hoursUntilDue < 0) {
+                const hoursOverdue = Math.abs(hoursUntilDue);
+                return `<span class="due-indicator due-urgent">
+                    <span class="icon">🚨</span>
+                    Overdue ${hoursOverdue > 24 ? Math.floor(hoursOverdue/24) + 'd' : hoursOverdue + 'h'}
+                </span>`;
+            } else if (hoursUntilDue <= 24) {
+                return `<span class="due-indicator due-warning">
+                    <span class="icon">⏰</span>
+                    Due ${hoursUntilDue <= 6 ? 'in ' + hoursUntilDue + 'h' : 'today'}
+                </span>`;
+            } else if (daysUntilDue <= 3) {
+                return `<span class="due-indicator due-soon">
+                    <span class="icon">📋</span>
+                    Due in ${daysUntilDue}d
+                </span>`;
+            }
+            
+            return '';
+        }
+
+        // Populate the reservation list dynamically
+        function populateReservationsList() {
+            const reservationList = document.getElementById('dynamicReservationList');
+            
+            if (!reservationList) return;
+            
+            reservationList.innerHTML = '';
+            
+            if (userReservationsData.length === 0) {
+                reservationList.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: var(--text-light);">
+                        <h3>No Reservations</h3>
+                        <p>You don't have any reservations yet.</p>
+                        <a href="dashboard.html" class="btn btn-primary" style="margin-top: 1rem; text-decoration: none;">
+                            Browse Equipment
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            userReservationsData.forEach(reservation => {
+                const startDateTime = parseDateTime(reservation.startDate, reservation.startTime);
+                const endDateTime = parseDateTime(reservation.endDate, reservation.endTime);
+                
+                const reservationElement = document.createElement('div');
+                reservationElement.className = 'reservation-item';
+                
+                const statusClass = reservation.status === 'active' ? 'reserved' : 'available';
+                const statusText = reservation.status === 'active' ? 'Active' : 'Upcoming';
+                
+                const dueIndicator = getDueDateIndicatorHTML(reservation);
+                
+                reservationElement.innerHTML = `
+                    <div class="reservation-info">
+                        <h4>${reservation.equipment}${dueIndicator}</h4>
+                        <p>${startDateTime.toLocaleDateString()} ${startDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
+                           ${endDateTime.toLocaleDateString()} ${endDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        <span class="status ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="reservation-actions">
+                        ${reservation.status === 'upcoming' ? `
+                            <button class="btn-small" style="background: var(--primary);" onclick="extendReservationDue(${reservation.id})">Extend</button>
+                            <button class="btn-small" style="background: var(--danger);" onclick="cancelReservationDue(${reservation.id})">Cancel</button>
+                        ` : `
+                            <button class="btn-small" style="background: var(--primary);" onclick="extendReservationDue(${reservation.id})">Extend</button>
+                            <button class="btn-small" style="background: var(--accent); color: white;" onclick="returnEquipmentReservation(${reservation.id})">Return</button>
+                        `}
+                    </div>
+                `;
+                
+                reservationList.appendChild(reservationElement);
+            });
+        }
+
+        // Action functions
+        function returnEquipmentReservation(reservationId) {
+            const reservation = userReservationsData.find(r => r.id === reservationId);
+            if (reservation) {
+                reservation.status = 'completed';
+                reservation.checkedOut = false;
+                
+                // Show floating success notification
+                showFloatingNotification(`Successfully returned ${reservation.equipment}!`, 'success', '✅');
+                
+                // Refresh the page
+                refreshReservationPage();
+            }
+        }
+
+        function extendReservationDue(reservationId) {
+            const reservation = userReservationsData.find(r => r.id === reservationId);
+            if (reservation) {
+                const currentEndDate = new Date(reservation.endDate);
+                currentEndDate.setDate(currentEndDate.getDate() + 1);
+                reservation.endDate = currentEndDate.toISOString().split('T')[0];
+                
+                showFloatingNotification(`Extended ${reservation.equipment} return date by 1 day!`, 'success', '📅');
+                refreshReservationPage();
+            }
+        }
+
+        function cancelReservationDue(reservationId) {
+            const reservationIndex = userReservationsData.findIndex(r => r.id === reservationId);
+            if (reservationIndex > -1) {
+                const reservation = userReservationsData[reservationIndex];
+                userReservationsData.splice(reservationIndex, 1);
+                showFloatingNotification(`Cancelled reservation for ${reservation.equipment}`, 'warning', '🗑️');
+                refreshReservationPage();
+            }
+        }
+
+        function dismissDueDateNotification(closeButton) {
+            const notificationItem = closeButton.closest('.notification-item');
+            notificationItem.style.animation = 'slideOutUp 0.3s ease-in';
+            
+            setTimeout(() => {
+                notificationItem.remove();
+                
+                const banner = document.getElementById('dueDateNotificationBanner');
+                if (banner.children.length === 0) {
+                    banner.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        // Floating notification function
+        function showFloatingNotification(message, type = 'success', icon = '✅') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.25rem;">${icon}</span>
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--text); font-size: 1rem;">
+                            ${type === 'success' ? 'Success!' : type === 'error' ? 'Error!' : 'Notice!'}
+                        </h4>
+                        <p style="margin: 0; color: var(--text-light); font-size: 0.9rem;">
+                            ${message}
+                        </p>
+                    </div>
+                </div>
+            `;
+            
+            // Set border color based on type
+            if (type === 'success') {
+                notification.style.borderLeftColor = '#4caf50';
+            } else if (type === 'error') {
+                notification.style.borderLeftColor = '#f44336';
+            } else if (type === 'warning') {
+                notification.style.borderLeftColor = '#ffa726';
+            }
+            
+            document.body.appendChild(notification);
+
+            // Remove notification after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        function refreshReservationPage() {
+            const notifications = checkReservationDueDates();
+            displayDueDateNotifications(notifications);
+            populateReservationsList();
+        }
+
+        // Initialize the reservation page
+        function initReservationPage() {
+            // Check if equipment parameter exists in URL for reservation form
+            const urlParams = new URLSearchParams(window.location.search);
+            const equipment = urlParams.get('equipment');
+            
+            if (equipment) {
+                // Show reservation form
+                document.getElementById('reservationFormSection').classList.remove('hidden');
+                document.getElementById('reservationListSection').classList.add('hidden');
+                document.getElementById('equipmentName').value = equipment;
+            } else {
+                // Show reservations list with notifications
+                refreshReservationPage();
+                
+                // Auto-refresh notifications every 5 minutes
+                setInterval(() => {
+                    const notifications = checkReservationDueDates();
+                    displayDueDateNotifications(notifications);
+                }, 5 * 60 * 1000);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initReservationPage);
+    </script>
+</body>
+</html>

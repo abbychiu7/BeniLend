@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Check-In - BeniLend</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">BeniLend</div>
+            <nav>
+                <!-- Navigation will be populated by auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="checkin-form">
+            <h2 style="margin-bottom: 2rem; color: var(--text);">Equipment Check-In/Out</h2>
+            
+            <div class="form-group">
+                <label>Scan QR Code or Enter ID</label>
+                <input type="text" placeholder="Equipment ID or scan barcode..." id="equipmentScan">
+            </div>
+
+            <div class="form-group">
+                <label>Equipment</label>
+                <select>
+                    <option>DSLR Camera</option>
+                    <option>Speakers</option>
+                    <option>Projector</option>
+                    <option>Microphone Set</option>
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <h4 style="margin-bottom: 1rem; color: var(--text);">Condition Checklist</h4>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="battery">
+                    <label for="battery">Battery Full</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="clean">
+                    <label for="clean">Equipment Clean</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="accessories">
+                    <label for="accessories">Accessories Complete</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="damage">
+                    <label for="damage">No Visible Damage</label>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="handleCheckout()">Check-Out</button>
+                <button class="btn btn-secondary" onclick="handleCheckin()">Check-In</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

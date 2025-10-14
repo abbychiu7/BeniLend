@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeniLend - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">BeniLend</div>
+            <nav>
+                <!-- Navigation will be populated by auth.js -->
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="dashboard" class="page">
+            <div id="notificationBanner" class="notification-banner hidden"></div>
+
+            <div class="welcome">
+                <h1>Hi Student, ready to borrow?</h1>
+                <p>Browse available equipment and make a reservation</p>
+            </div>
+
+  <div class="search-bar">
+    <input type="text" placeholder="Search equipment..." id="searchInput" />
+  </div>
+
+  <div class="equipment-grid" id="equipmentGrid">
+    <div class="equipment-card">
+      <div class="equipment-icon">📷</div>
+      <h3>DSLR Camera</h3>
+      <span class="status available">Available</span>
+      <p style="color: var(--text-light); margin-bottom: 1rem;">Professional camera</p>
+      <button class="btn btn-primary" onclick="openReservation('DSLR Camera')">Reserve</button>
+    </div>
+
+    <div class="equipment-card">
+      <div class="equipment-icon">📢</div>
+      <h3>Speakers</h3>
+      <span class="status available">Available</span>
+      <p style="color: var(--text-light); margin-bottom: 1rem;">High-performance speakers</p>
+      <button class="btn btn-primary" onclick="openReservation('Speakers')">Reserve</button>
+    </div>
+
+     <div class="equipment-card">
+                    <div class="equipment-icon">📽️</div>
+                    <h3>Projector</h3>
+                    <span class="status reserved">Reserved</span>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">Available from Oct 16</p>
+                    <button class="btn btn-secondary" disabled>Reserved</button>
+                </div>
+
+                <div class="equipment-card">
+                    <div class="equipment-icon">🎤</div>
+                    <h3>Microphone Set</h3>
+                    <span class="status available">Available</span>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">Audio recording equipment</p>
+                    <button class="btn btn-primary" onclick="openReservation('Microphone Set')">Reserve</button>
+                </div>
+
+                <div class="equipment-card">
+                    <div class="equipment-icon">💡</div>
+                    <h3>Lighting Kit</h3>
+                    <span class="status available">Available</span>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">Professional lighting setup</p>
+                    <button class="btn btn-primary" onclick="openReservation('Lighting Kit')">Reserve</button>
+                </div>
+
+                <div class="equipment-card">
+                    <div class="equipment-icon">🎬</div>
+                    <h3>Tripod Stand</h3>
+                    <span class="status available">Available</span>
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">Stable camera support</p>
+                    <button class="btn btn-primary" onclick="openReservation('Tripod Stand')">Reserve</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservation Page -->
+        <div id="reservation" class="page hidden">
+            <div class="reservation-form">
+                <h2 style="margin-bottom: 2rem; color: var(--text);">Reserve Equipment</h2>
+                <form onsubmit="submitReservation(event)">
+                    <div class="form-group">
+                        <label>Equipment</label>
+                        <input type="text" id="equipmentName" readonly style="background: var(--secondary);">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reserve From</label>
+                        <div class="datetime-group">
+                            <input type="date" id="dateFrom" required>
+                            <input type="time" id="timeFrom" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reserve To</label>
+                        <div class="datetime-group">
+                            <input type="date" id="dateTo" required>
+                            <input type="time" id="timeTo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (Required)</label>
+                        <textarea rows="3" placeholder="Reason for borrowing..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Reserve</button>
+                    <button type="button" class="btn btn-secondary" onclick="showPage('dashboard')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
