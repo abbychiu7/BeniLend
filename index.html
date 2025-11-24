@@ -26,6 +26,11 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary login-btn">Login</button>
+
+                <!-- Back Button under login button -->
+                <div class="back-button-container">
+                    <a href="https://abbychiu7.github.io/BeOne/" class="btn btn-back">🢀 BeOne</a>
+                </div>
             </form>
 
             <div class="login-help">
@@ -43,61 +48,35 @@
     </div>
 
     <script>
-        // Check if user is already logged in
         if (localStorage.getItem('benilend_user')) {
             const user = JSON.parse(localStorage.getItem('benilend_user'));
-            if (user.role === 'user') {
-                window.location.href = 'dashboard.html';
-            } else if (user.role === 'admin') {
-                window.location.href = 'admin.html';
-            }
+            if (user.role === 'user') window.location.href = 'dashboard.html';
+            else if (user.role === 'admin') window.location.href = 'admin.html';
         }
 
         function handleLogin(event) {
             event.preventDefault();
-            
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
-            // Simple authentication logic
             if (username === 'user' && password === 'pass') {
-                // Login as user
-                const user = {
-                    username: 'user',
-                    role: 'user',
-                    loginTime: new Date().toISOString()
-                };
+                const user = { username: 'user', role: 'user', loginTime: new Date().toISOString() };
                 localStorage.setItem('benilend_user', JSON.stringify(user));
                 showFloatingNotification('Login successful! Welcome Student!', 'success', '👋');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
             } else if (username === 'admin' && password === 'pass') {
-                // Login as admin
-                const user = {
-                    username: 'admin',
-                    role: 'admin',
-                    loginTime: new Date().toISOString()
-                };
+                const user = { username: 'admin', role: 'admin', loginTime: new Date().toISOString() };
                 localStorage.setItem('benilend_user', JSON.stringify(user));
                 showFloatingNotification('Login successful! Welcome Admin!', 'success', '🔐');
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
+                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
             } else {
-                // Invalid credentials
                 showFloatingNotification('Invalid username or password!', 'error', '❌');
-                
-                // Add shake animation to form
                 const form = document.querySelector('.login-form');
                 form.style.animation = 'shake 0.5s ease-in-out';
-                setTimeout(() => {
-                    form.style.animation = '';
-                }, 500);
+                setTimeout(() => { form.style.animation = ''; }, 500);
             }
         }
 
-        // Floating notification function (same as in reservation.html)
         function showFloatingNotification(message, type = 'success', icon = '✅') {
             const notification = document.createElement('div');
             notification.className = 'notification';
@@ -115,25 +94,15 @@
                 </div>
             `;
             
-            // Set border color based on type
-            if (type === 'success') {
-                notification.style.borderLeftColor = '#4caf50';
-            } else if (type === 'error') {
-                notification.style.borderLeftColor = '#f44336';
-            } else if (type === 'warning') {
-                notification.style.borderLeftColor = '#ffa726';
-            }
+            if (type === 'success') notification.style.borderLeftColor = '#4caf50';
+            else if (type === 'error') notification.style.borderLeftColor = '#f44336';
+            else if (type === 'warning') notification.style.borderLeftColor = '#ffa726';
             
             document.body.appendChild(notification);
 
-            // Remove notification after 4 seconds
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 300);
             }, 4000);
         }
     </script>

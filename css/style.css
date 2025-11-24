@@ -946,3 +946,22 @@ nav a:hover, nav a.active {
         font-size: 2rem;
     }
 }
+.btn-back {
+    display: inline-block;
+    width: 100%; /* full width like login button */
+    padding: 0.9rem 2rem;
+    background-color: var(--primary); /* light green like login credentials button */
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: var(--accent); /* slightly darker green on hover */
+    color: white;
+}
+
