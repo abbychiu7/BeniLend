@@ -1,10 +1,10 @@
 # BeniLend
 
-BeniLend is a simple and efficient loan management system that allows users to apply for loans, track repayment schedules, and enables admins to manage loan applications and users.
+BeniLend is a simple and efficient loan management system that allows users to apply for reservations, track repayment schedules, and enables admins to manage reservation applications and users.
 
 ## Features
 - User registration and login
-- Loan application and approval
+- application and approval
 - Repayment tracking
 - Admin dashboard for monitoring loans and users
 
